@@ -12,6 +12,7 @@ import { createMeshBlock } from "./utils";
 import { BlockIndexToKey, BlockTypeKey } from "../../network/constants";
 import { setupScene } from "../engine/setupScene";
 import { CHUNK_RENDER_DISTANCE, CHUNK_SIZE, MIN_HEIGHT, SKY_COLOR } from "./constants";
+import { createOculusVRScene } from "./vr";
 
 export interface API {
   getTerrainBlockAtPosition: (coord: VoxelCoord) => EntityID;
@@ -134,5 +135,9 @@ export function setupNoaEngine(api: API) {
     const key = BlockIndexToKey[index];
     return key != null && key != "Air" && !Blocks[key]?.fluid;
   };
+
+  // const canvas = document.getElementById("noa-canvas");
+  createOculusVRScene(noa, opts.playerStart);
+
   return { noa, setBlock, glow };
 }
