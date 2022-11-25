@@ -2,41 +2,21 @@ import * as BABYLON from "@babylonjs/core";
 import { Engine } from "noa-engine";
 
 // Credit to Gustavo_Font, code from https://forum.babylonjs.com/t/walking-on-webxr/27903/3 and https://playground.babylonjs.com/#ACSDWY
-export const createOculusVRScene = async function (engine: Engine, startPosition: BABYLON.Vector3) {
+export const createOculusVRScene = async function (engine: Engine, startPosition: number[]) {
   // This creates a basic Babylon Scene object (non-mesh)
   const scene: BABYLON.Scene = engine.rendering.getScene();
-  const canvas = engine.container.canvas;
-  const canvasElement = document.getElementById("noa-canvas") as HTMLCanvasElement;
-  console.log("CANVAS TYPES AND THINGS", canvas, canvasElement, canvas == canvasElement, typeof canvas);
+  const canvas = engine.container.canvas; // Same as the noa-canvas element in the DOM
+
   // This creates and positions a free camera (non-mesh)
   // const camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   const camera = engine.rendering._camera;
-  const posdx = 0;
-  const posdz = 0;
-  const posix = 0;
-  const posiz = 0;
-  const sentido = "";
-  const sentido2 = "";
-
   // This targets the camera to scene origin
-  //   camera.setTarget(BABYLON.Vector3.Zero());
+  // camera.setTarget(BABYLON.Vector3.FromArray(startPosition));
   // This attaches the camera to the canvas
-  //   camera.attachControl(canvas, true);
-
-  // TODO: These next 4 lines of code should be deleted
-
-  // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
-  const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-  // Default intensity is 1. Let's dim the light a small amount
-  light.intensity = 0.7;
-  // Our built-in 'sphere' shape.
-  const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 2, segments: 32 }, scene);
-  // Move the sphere upward 1/2 its height
-  sphere.position.y = 1;
-  // Our built-in 'ground' shape.
+  camera.attachControl(canvas, true);
 
   const ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 20, height: 20 }, scene);
   if (1 == 1 || navigator.userAgent.indexOf("OculusBrowser") !== -1) {
@@ -44,11 +24,18 @@ export const createOculusVRScene = async function (engine: Engine, startPosition
       floorMeshes: [ground],
       disableTeleportation: true,
       //teleportationEnabled:true,
+      outputCanvasOptions: {
+        canvasElement: canvas,
+      },
+      uiOptions: {
+        referenceSpaceType: "viewer",
+      },
       inputOptions: {
         forceInputProfile: "oculus-touch-v2",
-        //disableControllerAnimation: true,
-        //doNotLoadControllerMeshes : true,
-        //maxPointerDistance: 1,
+        disableOnlineControllerRepository: true,
+        doNotLoadControllerMeshes: true,
+        disableControllerAnimation: true,
+        // maxPointerDistance: 1,
       },
     });
 
@@ -63,9 +50,15 @@ export const createOculusVRScene = async function (engine: Engine, startPosition
     let observer2: any;
     const speed = 0.01;
     let positiond: BABYLON.Vector3;
+    // let posdx = 0;
+    // let posdz = 0;
+    // let posix = 0;
+    // let posiz = 0;
     // let eje = "";
     // xr.input.onControllerAddedObservable.add((controller: any) => {
     //   const isXR = true;
+    //   let sentido = "";
+    //   let sentido2 = "";
     //   //right hand
     //   if (controller.inputSource.handedness === "right") {
     //     controller.onMotionControllerInitObservable.add((motionController: any) => {
